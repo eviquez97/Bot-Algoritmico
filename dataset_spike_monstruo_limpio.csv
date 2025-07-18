@@ -1,0 +1,33 @@
+# balancear_dataset_spike_sobrescribir.py
+import pandas as pd
+from sklearn.utils import resample
+
+CSV = "data/dataset_spike_monstruo_limpio.csv"
+
+try:
+    df = pd.read_csv(CSV)
+
+    if "spike" not in df.columns:
+        raise ValueError("[❌ ERROR] La columna 'spike' no existe en el CSV.")
+
+    df_spike = df[df["spike"] == 1]
+    df_no_spike = df[df["spike"] == 0]
+
+    min_size = min(len(df_spike), len(df_no_spike))
+
+    df_spike_resampled = resample(df_spike, replace=True, n_samples=min_size, random_state=42)
+    df_no_spike_resampled = resample(df_no_spike, replace=True, n_samples=min_size, random_state=42)
+
+    df_balanceado = pd.concat([df_spike_resampled, df_no_spike_resampled])
+    df_balanceado = df_balanceado.sample(frac=1, random_state=42).reset_index(drop=True)
+
+    df_balanceado.to_csv(CSV, index=False)
+
+    print("===== [✅ ACTUALIZACIÓN COMPLETA] =====")
+    print(f"[📁 CSV ACTUALIZADO] {CSV}")
+    print(f"[🟢 SPIKES:] {len(df_spike_resampled)}")
+    print(f"[⚫ NO SPIKES:] {len(df_no_spike_resampled)}")
+    print(f"[📊 TOTAL:] {len(df_balanceado)}")
+
+except Exception as e:
+    print(f"[❌ ERROR] {e}")

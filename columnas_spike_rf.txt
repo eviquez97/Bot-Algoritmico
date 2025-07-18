@@ -1,0 +1,9 @@
+score
+rsi
+momentum
+spread
+ema
+variacion
+fuerza_cuerpo
+fuerza_mecha
+bajistas
